@@ -19,11 +19,24 @@ wiki_result = wiki.run(query)
 
 memory_agent_2 = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
 
+
 # Fetch the webpage
-url = "https://ai.googleblog.com/"
-response = requests.get(url)
-soup = BeautifulSoup(response.text, "html.parser")
-latest_news = soup.find("h2").text
+
+def extract_article_content(url):
+    res = requests.get(url)
+    soup = BeautifulSoup(res.text, "html.parser")
+
+    content_section = soup.find("div")
+    if not content_section:
+        return {"content": "No content found."}
+
+    paragraphs = content_section.find_all("p")
+    content = "\n".join(p.get_text(strip=True) for p in paragraphs if p.get_text())
+
+    return content
+
+
+latest_news = extract_article_content("https://www.britannica.com/technology/artificial-intelligence/Reasoning")
 
 # Fetch from a PDF file
 loader = PyPDFLoader("assests/ai_book_1.pdf")
@@ -51,5 +64,5 @@ def ai_qa(prompt):
 
 response = ai_qa("What is AI?")
 print(response)
-print(ai_qa("Explain more about it?"))
+print(ai_qa("Explain more about Machine learning?"))
 print(ai_qa("Tell me some application that uses it."))

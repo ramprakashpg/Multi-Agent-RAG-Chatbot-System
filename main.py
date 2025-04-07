@@ -2,6 +2,8 @@ from fastapi import FastAPI, Query
 
 import ai_llm_service
 import llm_service
+import uvicorn
+import os
 
 app = FastAPI()
 
@@ -20,3 +22,7 @@ async def process_prompt(prompt: str, parameter: str = Query(...,
         return {"response": ai_llm_service.ai_qa(prompt)}
     # else:
     #     return{"response": concordia_llm.get_response(prompt)}
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="127.0.0.1", port=8000)

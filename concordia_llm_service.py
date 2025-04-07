@@ -57,10 +57,3 @@ retrieval_chain = ConversationalRetrievalChain.from_llm(llm, concordia_llm_retri
 
 def generate_response(prompt):
     return retrieval_chain.run(prompt)
-
-
-print(generate_response("Tell me about the computer science course in concordia"))
-print(generate_response("What are the degree requirements for it?"))
-
-# Pdf file about admission
-# Web - search

@@ -60,9 +60,3 @@ ai_chain = ConversationalRetrievalChain.from_llm(llm, ai_retriever, memory=memor
 
 def ai_qa(prompt):
     return ai_chain.run({"question": prompt})
-
-
-response = ai_qa("What is AI?")
-print(response)
-print(ai_qa("Explain more about Machine learning?"))
-print(ai_qa("Tell me some application that uses it."))

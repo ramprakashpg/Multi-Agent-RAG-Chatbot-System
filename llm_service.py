@@ -21,9 +21,6 @@ def general_qa(prompt: str):
     return qa_chain.run({"question": prompt})
 
 
-print(general_qa("what is the capital of canada?"))
-print(general_qa("tell me more about it"))
-
 
 
 

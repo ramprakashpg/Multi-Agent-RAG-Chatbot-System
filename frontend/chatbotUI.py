@@ -6,9 +6,9 @@ BACKEND_URL = "http://127.0.0.1:8000/process/"
 FEEDBACK_URL = "http://127.0.0.1:8000/feedback/"  # Replace with your feedback API URL
 
 def get_backend_response(prompt: str, mode: str):
-    parameters = {"prompt": prompt, "parameter": mode}
+    payload = {"user_prompt": prompt, "agent": mode}
     try:
-        api_response = requests.post(BACKEND_URL, params=parameters)
+        api_response = requests.post(BACKEND_URL, json=payload)
         api_response.raise_for_status()
         data = api_response.json()
         return data.get("response", "Error: No 'response' key found in backend data.")
@@ -20,9 +20,9 @@ def get_backend_response(prompt: str, mode: str):
         return f"An unexpected error occurred: {e}"
 
 def send_feedback(chat_mode: str, feedback_type: str):
-    parameters = {"agent": chat_mode, "feedback": feedback_type}
+    payload = {"agent": chat_mode, "feedback": feedback_type}
     try:
-        feedback_response = requests.post(FEEDBACK_URL, params=parameters)
+        feedback_response = requests.post(FEEDBACK_URL, json=payload)
         feedback_response.raise_for_status()
         st.success(f"Feedback sent: {feedback_type} in {chat_mode}")
     except requests.exceptions.ConnectionError:

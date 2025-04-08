@@ -5,6 +5,7 @@ import time
 BACKEND_URL = "http://127.0.0.1:8000/process/"
 FEEDBACK_URL = "http://127.0.0.1:8000/feedback/"  # Replace with your feedback API URL
 
+
 def get_backend_response(prompt: str, mode: str):
     payload = {"user_prompt": prompt, "agent": mode}
     try:
@@ -19,6 +20,7 @@ def get_backend_response(prompt: str, mode: str):
     except Exception as e:
         return f"An unexpected error occurred: {e}"
 
+
 def send_feedback(chat_mode: str, feedback_type: str):
     payload = {"agent": chat_mode, "feedback": feedback_type}
     try:
@@ -31,6 +33,7 @@ def send_feedback(chat_mode: str, feedback_type: str):
         st.error(f"Error sending feedback: {e}")
     except Exception as e:
         st.error(f"An unexpected error occurred while sending feedback: {e}")
+
 
 # Streamlit UI
 st.set_page_config(page_title="Multi-Chatbot", layout="wide")
@@ -108,12 +111,17 @@ chat_mode = st.sidebar.radio(
 
 # Initialize chat history for each mode if not present in session state
 if "general_chat_history" not in st.session_state:
-    st.session_state.general_chat_history = [{"role": "assistant", "content": "Hi, I'm the general assistant. How can I help?"}]
+    st.session_state.general_chat_history = [
+        {"role": "assistant", "content": "Hi, I'm the general assistant. How can I help?"}]
 if "ai_chat_history" not in st.session_state:
-    st.session_state.ai_chat_history = [{"role": "assistant", "content": "Greetings! I'm the AI specialist. What's on your mind?"}]
+    st.session_state.ai_chat_history = [
+        {"role": "assistant", "content": "Greetings! I'm the AI specialist. What's on your mind?"}]
 if "concordia_chat_history" not in st.session_state:
-    st.session_state.concordia_chat_history = [{"role": "assistant", "content": "Hello! I'm the Concordia HelpDesk. Ask me anything."}]
+    st.session_state.concordia_chat_history = [
+        {"role": "assistant", "content": "Hello! I'm the Concordia HelpDesk. Ask me anything."}]
 
+agent_mode = ""
+current_chat_history = ""
 # Determine the current chat history and agent mode
 if chat_mode == "General Assistant":
     current_chat_history = st.session_state.general_chat_history
@@ -132,15 +140,15 @@ for i, message in enumerate(current_chat_history):
         # Show feedback buttons only after the first user message
         # AND exclude the initial assistant message
         if (
-            len(current_chat_history) > 1
-            and message["role"] == "assistant"
-            and i != 0  # Check if it's NOT the first message
+                len(current_chat_history) > 1
+                and message["role"] == "assistant"
+                and i != 0  # Check if it's NOT the first message
         ):
-            col1, col2, col3= st.columns([0.5, 0.5, 10])
+            col1, col2, col3 = st.columns([0.5, 0.5, 10])
             if col1.button("👍", key=f"thumbs_up_{chat_mode}_{i}"):
-                send_feedback(chat_mode, "positive")
+                send_feedback(agent_mode, "positive")
             if col2.button("👎", key=f"thumbs_down_{chat_mode}_{i}"):
-                send_feedback(chat_mode, "negative")
+                send_feedback(agent_mode, "negative")
 
 if prompt := st.chat_input(f"Ask the '{chat_mode.replace(' Chat', '')}' agent..."):
     current_chat_history.append({"role": "user", "content": prompt})
@@ -152,13 +160,13 @@ if prompt := st.chat_input(f"Ask the '{chat_mode.replace(' Chat', '')}' agent...
         message_placeholder = st.empty()
         full_response = ""
         for chunk in response_text.split():
-            full_response+= chunk + " "
+            full_response += chunk + " "
             time.sleep(0.08)
-            message_placeholder.markdown(full_response+ "▌")
+            message_placeholder.markdown(full_response + "▌")
         message_placeholder.markdown(response_text)
         current_chat_history.append({"role": "assistant", "content": response_text})
 
-        col1, col2, col3= st.columns([0.5, 0.5, 10])
+        col1, col2, col3 = st.columns([0.5, 0.5, 10])
         if col1.button("👍", key=f"thumbs_up_{chat_mode}_{len(current_chat_history) - 1}"):
             send_feedback(chat_mode, "positive")
         if col2.button("👎", key=f"thumbs_down_{chat_mode}_{len(current_chat_history) - 1}"):

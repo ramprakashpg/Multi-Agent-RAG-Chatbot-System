@@ -10,7 +10,7 @@ from langchain_community.utilities import WikipediaAPIWrapper
 from langchain_community.vectorstores import Chroma
 from langchain_ollama import OllamaLLM
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from backend.chat_agents.general_assistant import GeneralAgentSARSA
+from backend.utils.GeneralAgentSARSA import GeneralAgentSARSA
 
 wiki = WikipediaAPIWrapper()
 llm = OllamaLLM(model="llama3.2")

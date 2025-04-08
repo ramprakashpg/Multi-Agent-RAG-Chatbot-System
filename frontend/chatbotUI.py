@@ -18,7 +18,7 @@ def get_backend_response(prompt: str, mode: str):
     except requests.exceptions.RequestException as e:
         return f"Error: Backend request failed: {e}"
     except Exception as e:
-        return f"An unexpected error occurred: {e}"
+        return f"An unexpected error occurred:  {e}"
 
 # Streamlit UI
 st.set_page_config(page_title="Multi-Chatbot", layout="wide")

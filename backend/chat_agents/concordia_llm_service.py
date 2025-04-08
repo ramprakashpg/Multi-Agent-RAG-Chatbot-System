@@ -41,8 +41,8 @@ def extract_article_content(url):
 article_1 = extract_article_content("https://www.concordia.ca/academics/undergraduate/computer-science.html")
 article_2 = extract_article_content(
     "https://www.concordia.ca/academics/undergraduate/calendar/current/section-71-gina-cody-school-of-engineering-and-computer-science/section-71-70-department-of-computer-science-and-software-engineering/section-71-70-2-degree-requirements-bcompsc-.html")
-pdf_1 = load_pdf("assests/concordia_1.pdf")
-pdf_2 = load_pdf("assests/degree_req.pdf")
+pdf_1 = load_pdf("../../assests/concordia_1.pdf")
+pdf_2 = load_pdf("../../assests/degree_req.pdf")
 text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
 data = text_splitter.create_documents([article_1, article_2])
 concordia_llm = Chroma(persist_directory="./chroma_concordia", embedding_function=embedding_model)

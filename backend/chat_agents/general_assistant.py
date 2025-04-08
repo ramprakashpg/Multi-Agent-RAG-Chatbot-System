@@ -127,7 +127,7 @@ class GeneralAgentSARSA:
             response = self.llm_chain.run(user_input)
         except Exception as e:
             print(f"Error generating response: {e}")
-            response = "Sorry, I encountered an error while processing your request."
+            response = "Sorry, I encountered an error while processing your request. Please try again!!"
 
         return response
 

@@ -34,13 +34,74 @@ def send_feedback(chat_mode: str, feedback_type: str):
 
 # Streamlit UI
 st.set_page_config(page_title="Multi-Chatbot", layout="wide")
-st.title("🤖 Multi-Agent Chatbot")
 
-st.sidebar.title("Select Chat")
+st.markdown("""
+    <style>
+    
+    .stAppToolbar {
+        visibility: hidden;
+    }
+
+    /* Style each radio label */
+    div[role="radiogroup"] > label {
+        background-color: #ffffff;
+        border-radius: 8px;
+        padding: 0.8em 1.2em;
+        margin-bottom: 0.8em;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border-left: 4px solid transparent;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        display: flex;
+        align-items: center;
+        width: 100%;      /* Make all buttons take full width */
+        box-sizing: border-box;  /* Include padding in width calculation */
+    }
+
+    /* Hover effect */
+    div[role="radiogroup"] > label:hover {
+        background-color: #e0e4ea;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    /* Selected item styling */
+    div[role="radiogroup"] > label[data-selected="true"] {
+        background-color: #d0e4ff !important;
+        font-weight: bold;
+        border-left: 4px solid #4285f4;
+        box-shadow: 0 4px 8px rgba(66,133,244,0.2);
+    }
+
+    /* Icon styling */
+    div[role="radiogroup"] > label::before {
+        margin-right: 10px;
+        font-size: 1.2em;
+        flex-shrink: 0;  /* Prevent icon from shrinking */
+    }
+    
+    /* Optional: If you want to set a specific fixed width instead of full width */
+    /*
+    div[role="radiogroup"] {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    div[role="radiogroup"] > label {
+        width: 300px;  /* Set your desired fixed width */
+    }
+    */
+    </style>
+""", unsafe_allow_html=True)
+
+st.title("🤖 💬 Multi-Agent Virtual Assistant")
+
+st.sidebar.title("Agent Center")
 
 chat_mode = st.sidebar.radio(
-    "Choose a Chat:",
-    ("General Chat", "AI Specialist Chat", "Concordia Chat"),
+    "",
+    ("General Assistant", "AI Specialist", "Concordia HelpDesk"),
     index=0,
     key="chat_mode_selector"
 )
@@ -51,16 +112,16 @@ if "general_chat_history" not in st.session_state:
 if "ai_chat_history" not in st.session_state:
     st.session_state.ai_chat_history = [{"role": "assistant", "content": "Greetings! I'm the AI specialist. What's on your mind?"}]
 if "concordia_chat_history" not in st.session_state:
-    st.session_state.concordia_chat_history = [{"role": "assistant", "content": "Hello! I'm the Concordia expert. Ask me anything."}]
+    st.session_state.concordia_chat_history = [{"role": "assistant", "content": "Hello! I'm the Concordia HelpDesk. Ask me anything."}]
 
 # Determine the current chat history and agent mode
-if chat_mode == "General Chat":
+if chat_mode == "General Assistant":
     current_chat_history = st.session_state.general_chat_history
     agent_mode = "general"
-elif chat_mode == "AI Specialist Chat":
+elif chat_mode == "AI Specialist":
     current_chat_history = st.session_state.ai_chat_history
     agent_mode = "ai"
-elif chat_mode == "Concordia Chat":
+elif chat_mode == "Concordia HelpDesk":
     current_chat_history = st.session_state.concordia_chat_history
     agent_mode = "concordia"
 
@@ -75,7 +136,7 @@ for i, message in enumerate(current_chat_history):
             and message["role"] == "assistant"
             and i != 0  # Check if it's NOT the first message
         ):
-            col1, col2 = st.columns([1, 1])
+            col1, col2, col3= st.columns([0.5, 0.5, 10])
             if col1.button("👍", key=f"thumbs_up_{chat_mode}_{i}"):
                 send_feedback(chat_mode, "positive")
             if col2.button("👎", key=f"thumbs_down_{chat_mode}_{i}"):
@@ -97,16 +158,16 @@ if prompt := st.chat_input(f"Ask the '{chat_mode.replace(' Chat', '')}' agent...
         message_placeholder.markdown(response_text)
         current_chat_history.append({"role": "assistant", "content": response_text})
 
-        col1, col2 = st.columns([1, 1])
+        col1, col2, col3= st.columns([0.5, 0.5, 10])
         if col1.button("👍", key=f"thumbs_up_{chat_mode}_{len(current_chat_history) - 1}"):
             send_feedback(chat_mode, "positive")
         if col2.button("👎", key=f"thumbs_down_{chat_mode}_{len(current_chat_history) - 1}"):
             send_feedback(chat_mode, "negative")
 
     # Update the session state with the new chat history
-    if chat_mode == "General Chat":
+    if chat_mode == "General Assistant":
         st.session_state.general_chat_history = current_chat_history
-    elif chat_mode == "AI Specialist Chat":
+    elif chat_mode == "AI Specialist":
         st.session_state.ai_chat_history = current_chat_history
-    elif chat_mode == "Concordia Chat":
+    elif chat_mode == "Concordia HelpDesk":
         st.session_state.concordia_chat_history = current_chat_history

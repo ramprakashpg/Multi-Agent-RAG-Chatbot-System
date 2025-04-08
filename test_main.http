@@ -5,7 +5,7 @@ Accept: application/json
 
 ###
 
-GET http://127.0.0.1:8000/hello/User
+POST http://127.0.0.1:8000/process/?prompt=what+is+the+capital+of+Canada%3F&parameter=general
 Accept: application/json
 
 ###

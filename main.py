@@ -1,9 +1,9 @@
+import uvicorn
 from fastapi import FastAPI, Query
-from pydantic import BaseModel #needs to get added in req..
+from pydantic import BaseModel  # needs to get added in req..
 import ai_llm_service
 import llm_service
-import uvicorn
-import os
+import concordia_llm_service
 
 app = FastAPI()
 
@@ -12,9 +12,11 @@ app = FastAPI()
 async def root():
     return {"message": "Hello World"}
 
+
 class ProcessRequestBody(BaseModel):
     user_prompt: str
     agent: str
+
 
 class FeedbackRequestBody(BaseModel):
     agent: str
@@ -22,18 +24,19 @@ class FeedbackRequestBody(BaseModel):
 
 
 @app.post("/process/")
-async def process_prompt(request_data : ProcessRequestBody):
+async def process_prompt(request_data: ProcessRequestBody):
     user_prompt = request_data.user_prompt
     agent = request_data.agent
     if agent == "general":
         return {"response": llm_service.general_qa(user_prompt)}
     elif agent == "ai":
         return {"response": ai_llm_service.ai_qa(user_prompt)}
-    # else:
-    #     return{"response": concordia_llm.get_response(prompt)}
+    else:
+        return {"response": concordia_llm_service.generate_response(user_prompt)}
+
 
 @app.post("/feedback/")
-async def process_request(feedback_data : FeedbackRequestBody):
+async def process_request(feedback_data: FeedbackRequestBody):
     agent_mode = feedback_data.agent
     feedback = feedback_data.feedback
     response = f'Got the feedback {feedback} from {agent_mode} Agent'

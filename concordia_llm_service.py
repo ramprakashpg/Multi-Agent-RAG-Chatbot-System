@@ -35,7 +35,6 @@ def extract_article_content(url):
 
     paragraphs = content_section.find_all("p")
     content = "\n ".join(p.get_text(strip=True) for p in paragraphs if p.get_text())
-    print(content)
     return content
 
 
@@ -56,4 +55,4 @@ retrieval_chain = ConversationalRetrievalChain.from_llm(llm, concordia_llm_retri
 
 
 def generate_response(prompt):
-    return retrieval_chain.run(prompt)
+    return retrieval_chain.run({"question": prompt})

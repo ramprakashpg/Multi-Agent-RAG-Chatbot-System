@@ -5,11 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1f584df5-7161-489f-ba59-bfeded7b0d73" name="Changes" comment="refactor web scraping">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/concordia_llm_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/concordia_llm_service.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/general_chat.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/chatbotUI.py" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/chatbotUI.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/general-chat.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_main.http" beforeDir="false" afterPath="$PROJECT_DIR$/test_main.http" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,18 +28,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "ramprakashpg"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;ramprakashpg&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/ramprakashpg/Chatbot_Agent_IS.git",
-    "accountId": "cb3c2a8a-5a14-4d95-b1a1-0966fc21754d"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/ramprakashpg/Chatbot_Agent_IS.git&quot;,
+    &quot;accountId&quot;: &quot;cb3c2a8a-5a14-4d95-b1a1-0966fc21754d&quot;
   }
-}]]></component>
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 5
 }</component>
@@ -58,7 +58,7 @@
     "Python.llm_service.executor": "Run",
     "Python.main.executor": "Debug",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
+    "git-widget-placeholder": "Rebasing feature__RL__integ",
     "last_opened_file_path": "/Users/rampg/Desktop/rampg/Stud/Master studies/IS/OllamaProject",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -183,7 +183,6 @@
       <list>
         <item itemvalue="Python.main" />
         <item itemvalue="Python.chatbotUI" />
-        <item itemvalue="HTTP Request.test_main | #2" />
         <item itemvalue="Python.ai_llm_service" />
         <item itemvalue="Python.llm_service" />
       </list>
@@ -218,7 +217,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/main.py</url>
-          <line>24</line>
+          <line>21</line>
           <option name="timeStamp" value="3" />
         </line-breakpoint>
       </breakpoints>

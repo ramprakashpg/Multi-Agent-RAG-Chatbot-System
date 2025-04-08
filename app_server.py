@@ -1,26 +1,29 @@
-import backend.chat_agents.ai_llm_service
-import backend.chat_agents.llm_service
-import backend.chat_agents.concordia_llm_service
-import backend.chat_agents.general_assistant
-
 from fastapi import FastAPI, Query
 from pydantic import BaseModel
 import uvicorn
 import os
 
+from backend.chat_agents import general_assistant
+from backend.chat_agents import ai_llm_service
+from backend.chat_agents import concordia_llm_service
+
 app = FastAPI()
+
 
 @app.get("/")
 async def root():
-    return {"message": "Welcome to Multi-Agent Virtual Assitant"}
+    return {"message": "Welcome to Multi-Agent Virtual Assistant"}
+
 
 class ProcessRequestBody(BaseModel):
     user_prompt: str
     agent: str
 
+
 class FeedbackRequestBody(BaseModel):
     agent: str
     feedback: str
+
 
 @app.post("/process/")
 async def process_prompt(request_data: ProcessRequestBody):
@@ -37,18 +40,18 @@ async def process_prompt(request_data: ProcessRequestBody):
         print(f"Error generating response: {e}")
         return {"response": "Sorry, I encountered an error while processing your request. Please try again!!"}
 
+
 @app.post("/feedback/")
 async def process_request(feedback_data: FeedbackRequestBody):
-
     try:
         agent_mode = feedback_data.agent
         feedback = feedback_data.feedback
-        if agent == "general":
+        if agent_mode == "general":
             general_assistant.update_feedback(feedback_data.feedback)
-        elif agent == "ai":
-            general_assistant.update_feedback(feedback_data.feedback)
+        elif agent_mode == "ai":
+            ai_llm_service.update_feedback(feedback_data.feedback)
         else:
-            general_assistant.update_feedback(feedback_data.feedback)
+            concordia_llm_service.update_feedback(feedback_data.feedback)
 
         response = f'Got the feedback {feedback} from {agent_mode} Agent'
         return {"response": response}

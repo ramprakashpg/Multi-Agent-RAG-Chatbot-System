@@ -1,0 +1,3 @@
+AI ChatBot Accuracy: 80.00%
+Concordia ChatBot Accuracy: 60.00%
+General Assistant ChatBot Accuracy: 80.00%

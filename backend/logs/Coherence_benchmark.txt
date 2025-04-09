@@ -1,0 +1,3 @@
+AI ChatBot Coherence (Cosine Similarity): 60.43%
+Concordia ChatBot Coherence (Cosine Similarity): 63.20%
+General Assistant ChatBot Coherence (Cosine Similarity): 47.47%

@@ -14,7 +14,6 @@ Dependencies:
 - requests
 """
 
-
 import streamlit as st
 import requests
 import time
@@ -22,18 +21,18 @@ import time
 BACKEND_URL = "http://127.0.0.1:8000/process/"
 FEEDBACK_URL = "http://127.0.0.1:8000/feedback/"  # Replace with your feedback API URL
 
-"""
-Sends a prompt to the backend API and retrieves the agent's response.
-
-Args:
-    prompt (str): The user's input or query.
-    mode (str): The agent type selected (e.g., "general", "ai", "concordia").
-
-Returns:
-    str: The response text from the backend agent, or an error message if the request fails.
-"""
 
 def get_backend_response(prompt: str, mode: str):
+    """
+    Sends a prompt to the backend API and retrieves the agent's response.
+
+    Args:
+        prompt (str): The user's input or query.
+        mode (str): The agent type selected (e.g., "general", "ai", "concordia").
+
+    Returns:
+        str: The response text from the backend agent, or an error message if the request fails.
+    """
     payload = {"user_prompt": prompt, "agent": mode}
     try:
         api_response = requests.post(BACKEND_URL, json=payload)
@@ -47,22 +46,24 @@ def get_backend_response(prompt: str, mode: str):
     except Exception as e:
         return f"An unexpected error occurred: {e}"
 
-"""
-Sends user feedback (positive or negative) for a specific agent to the feedback API.
 
-Args:
-    chat_mode (str): The identifier for the agent receiving feedback.
-    feedback_type (str): Type of feedback, either "positive" or "negative".
-
-Returns:
-    None: Displays a Streamlit success or error message based on the result.
-"""
 def send_feedback(chat_mode: str, feedback_type: str):
+    """
+    Sends user feedback (positive or negative) for a specific agent to the feedback API.
+
+    Args:
+        chat_mode (str): The identifier for the agent receiving feedback.
+        feedback_type (str): Type of feedback, either "positive" or "negative".
+
+    Returns:
+        None: Displays a Streamlit success or error message based on the result.
+    """
     payload = {"agent": chat_mode, "feedback": feedback_type}
     try:
         feedback_response = requests.post(FEEDBACK_URL, json=payload)
         feedback_response.raise_for_status()
         st.success(f"Feedback sent: {feedback_type} in {chat_mode}")
+
     except requests.exceptions.ConnectionError:
         st.error(f"Error: Could not connect to feedback API at {FEEDBACK_URL}")
     except requests.exceptions.RequestException as e:
@@ -72,8 +73,8 @@ def send_feedback(chat_mode: str, feedback_type: str):
 
 
 # Streamlit UI
-st.set_page_config(page_title="Multi-Chatbot", layout="wide")
 
+st.set_page_config(page_title="Multi-Chatbot", layout="wide")
 st.markdown("""
     <style>
 

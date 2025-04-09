@@ -37,19 +37,13 @@ st.set_page_config(page_title="Multi-Chatbot", layout="wide")
 
 st.markdown("""
     <style>
-    
-    .stAppToolbar {
-        visibility: hidden;
-    }
 
     /* Style each radio label */
     div[role="radiogroup"] > label {
-        background-color: #ffffff;
         border-radius: 8px;
         padding: 0.8em 1.2em;
         margin-bottom: 0.8em;
         cursor: pointer;
-        transition: all 0.3s ease;
         border-left: 4px solid transparent;
         box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         display: flex;
@@ -60,9 +54,7 @@ st.markdown("""
 
     /* Hover effect */
     div[role="radiogroup"] > label:hover {
-        background-color: #e0e4ea;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        border: 2px solid #ffffff;
     }
 
     /* Selected item styling */

@@ -1,3 +1,20 @@
+"""
+Multi-Agent Virtual Assistant (Streamlit UI)
+
+This Streamlit application serves as a front-end interface for a multi-agent chatbot system.
+It enables users to interact with three distinct agents: a General Assistant, an AI Specialist,
+and a Concordia HelpDesk bot. The app maintains separate chat histories for each agent and provides
+user feedback options (thumbs up/down) for backend performance evaluation.
+
+The assistant responses are fetched from a backend API, and user feedback is sent to a designated
+feedback endpoint. Styling and layout customizations are applied for an improved user experience.
+
+Dependencies:
+- streamlit
+- requests
+"""
+
+
 import streamlit as st
 import requests
 import time
@@ -5,6 +22,16 @@ import time
 BACKEND_URL = "http://127.0.0.1:8000/process/"
 FEEDBACK_URL = "http://127.0.0.1:8000/feedback/"  # Replace with your feedback API URL
 
+"""
+Sends a prompt to the backend API and retrieves the agent's response.
+
+Args:
+    prompt (str): The user's input or query.
+    mode (str): The agent type selected (e.g., "general", "ai", "concordia").
+
+Returns:
+    str: The response text from the backend agent, or an error message if the request fails.
+"""
 
 def get_backend_response(prompt: str, mode: str):
     payload = {"user_prompt": prompt, "agent": mode}
@@ -20,7 +47,16 @@ def get_backend_response(prompt: str, mode: str):
     except Exception as e:
         return f"An unexpected error occurred: {e}"
 
+"""
+Sends user feedback (positive or negative) for a specific agent to the feedback API.
 
+Args:
+    chat_mode (str): The identifier for the agent receiving feedback.
+    feedback_type (str): Type of feedback, either "positive" or "negative".
+
+Returns:
+    None: Displays a Streamlit success or error message based on the result.
+"""
 def send_feedback(chat_mode: str, feedback_type: str):
     payload = {"agent": chat_mode, "feedback": feedback_type}
     try:

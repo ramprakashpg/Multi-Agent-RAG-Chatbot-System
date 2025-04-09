@@ -1,3 +1,14 @@
+"""
+general_agent_sarsa.py
+
+This module defines the GeneralAgentSARSA class which wraps a LangChain conversational agent
+with SARSA (State-Action-Reward-State-Action) reinforcement learning logic.
+
+The agent learns optimal conversational actions based on user input and feedback (positive/negative).
+
+Author: Aswiin Ravi Prakash
+Date: April 8, 2025
+"""
 import os
 import random
 
@@ -9,21 +20,46 @@ prompt_template = "User input: {user_input}\nAgent action: {action}\nrespond acc
 
 
 class GeneralAgentSARSA:
+    """
+        A conversational agent that uses SARSA reinforcement learning to improve responses
+        based on user feedback and selected dialogue actions.
+
+        Attributes:
+            actions (List[str]): A list of possible actions/strategies the agent can use in responses.
+            llm_chain (ConversationalRetrievalChain): LangChain chain with retrieval-augmented generation.
+            alpha (float): Learning rate for SARSA updates.
+            gamma (float): Discount factor for future rewards.
+            epsilon (float): Exploration factor for epsilon-greedy policy.
+            q_table_path (str): Path to store/load the Q-table (numpy file).
+            log_file (str): Path to the Excel log of query-response-feedback entries.
+        """
+
     def __init__(self, actions, llm_chain, alpha=0.1, gamma=0.9, epsilon=0.1, q_table_path="",
                  log_file=""):
-        self.actions = actions  # List of possible actions
-        self.llm_chain = llm_chain  # LangChain LLM chain
-        self.alpha = alpha  # Learning rate
-        self.gamma = gamma  # Discount factor
-        self.epsilon = epsilon  # Exploration factor
+        """
+                Initializes the SARSA agent with actions, memory, and model chain.
+
+                Args:
+                    actions (List[str]): List of conversational action types.
+                    llm_chain: LangChain's ConversationalRetrievalChain.
+                    alpha (float): Learning rate.
+                    gamma (float): Discount factor.
+                    epsilon (float): Exploration probability.
+                    q_table_path (str): Path to save/load Q-table.
+                    log_file (str): Path to Excel file for logging queries/responses/feedback.
+                """
+        self.actions = actions
+        self.llm_chain = llm_chain
+        self.alpha = alpha
+        self.gamma = gamma
+        self.epsilon = epsilon
         self.q_table_path = q_table_path
         self.log_file = log_file
 
-        # Load or initialize Q-table
         if os.path.exists(self.q_table_path):
             self.q_table = np.load(self.q_table_path)
         else:
-            self.q_table = np.zeros((100, len(actions)))  # Simplified state space
+            self.q_table = np.zeros((100, len(actions)))
 
         # Store SARSA components
         self.current_state = None
@@ -36,7 +72,14 @@ class GeneralAgentSARSA:
         self.history = []
 
     def add_query_response(self, query='', response='', feedback=0.0):
-        # Load the existing workbook
+        """
+                Logs a new user query and agent response into the Excel log file.
+
+                Args:
+                    query (str): User input.
+                    response (str): Agent's generated response.
+                    feedback (float): Feedback score (default 0.0).
+                """
         wb = load_workbook(self.log_file)
         ws = wb.active
 
@@ -46,6 +89,12 @@ class GeneralAgentSARSA:
         print(f"Added query and response: {query}, {response}")
 
     def add_feedback_to_last_row(self, feedback=0.0):
+        """
+                Appends feedback to the most recent interaction row in the Excel log.
+
+                Args:
+                    feedback (float): Feedback reward (e.g., 1.0 for positive, -1.0 for negative).
+                """
         # Load the existing workbook
         wb = load_workbook(self.log_file)
         print(self.log_file, self.q_table_path)
@@ -61,8 +110,16 @@ class GeneralAgentSARSA:
         print(f"Feedback added to the last row: {feedback}")
 
     def get_state(self, user_input):
+        """
+                Encodes the user input into a simplified integer state.
+
+                Args:
+                    user_input (str): Input message from the user.
+
+                Returns:
+                    int: Encoded state index (0–99).
+                """
         # Improved state representation - combines input length with content features
-        # This is still simplified but better than just length
         state_features = [
             len(user_input) % 50,  # Length feature (0-49)
             sum(c.isalpha() for c in user_input) % 10,  # Character type feature
@@ -74,6 +131,15 @@ class GeneralAgentSARSA:
         return state_index
 
     def choose_action(self, state):
+        """
+               Selects an action index using an epsilon-greedy policy.
+
+               Args:
+                   state (int): The current encoded state.
+
+               Returns:
+                   int: Index of selected action.
+               """
         # Epsilon-greedy policy with decaying epsilon for better convergence
         if random.uniform(0, 1) < max(0.01, self.epsilon):  # Epsilon floor of 0.01
             return random.choice(range(len(self.actions)))  # Exploration
@@ -81,31 +147,46 @@ class GeneralAgentSARSA:
             return np.argmax(self.q_table[state])  # Exploitation
 
     def update_q_table(self, state, action, reward, next_state, next_action):
+        """
+                Performs a SARSA update on the Q-table.
+
+                Args:
+                    state (int): Previous state.
+                    action (int): Action taken in previous state.
+                    reward (float): Immediate reward.
+                    next_state (int): Next observed state.
+                    next_action (int): Next action taken.
+                """
         # Standard SARSA update rule
         old_q_value = self.q_table[state, action]
         next_q_value = self.q_table[next_state, next_action]
         self.q_table[state, action] = old_q_value + self.alpha * (reward + self.gamma * next_q_value - old_q_value)
 
         # Save Q-table periodically to persist learning
-        # Save 10% of the time to avoid constant disk writes
         np.save(self.q_table_path, self.q_table)
 
         # Log update for debugging
         print(f"Updated Q({state},{action}) = {self.q_table[state, action]:.4f} (reward: {reward})")
 
     def process_input(self, user_input):
+        """
+                Processes user input, selects an action, and generates a response using the LLM chain.
+
+                Args:
+                    user_input (str): User message or question.
+
+                Returns:
+                    str: Agent's response.
+                """
         # Get the next state based on the user input
         next_state = self.get_state(user_input)
         print(f"State: {next_state}")
 
-        # Choose next action using epsilon-greedy policy
         next_action_idx = self.choose_action(next_state)
         next_action_name = self.actions[next_action_idx]
         print(f"Selected action: {next_action_name}")
 
-        # If we have a previous state-action pair, update the Q-table with an immediate reward
         if self.awaiting_feedback and self.current_state is not None and self.current_action is not None:
-            # Simple immediate reward: +0.1 for continuing the conversation
             immediate_reward = 0.1
             self.update_q_table(
                 self.current_state,
@@ -146,6 +227,15 @@ class GeneralAgentSARSA:
         return response
 
     def handle_feedback(self, feedback_type):
+        """
+                Handles user feedback and updates the Q-table accordingly.
+
+                Args:
+                    feedback_type (str): Type of feedback ("positive" or "negative").
+
+                Returns:
+                    float: The numerical reward used in the Q-table update.
+                """
         # Process explicit feedback (thumbs up/down)
         if not self.awaiting_feedback or self.current_state is None or self.current_action is None:
             print(self.log_file, self.q_table_path)

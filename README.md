@@ -99,6 +99,11 @@ ollama run llama3
 cd backend
 uvicorn main:app --reload
 ```
+
+## Architecure Diagram
+
+![LANGCHAIN](https://github.com/user-attachments/assets/3de77a06-53fc-453b-8071-b4c00f41a3db)
+
 ## 🧠 How It Works
 
 1. The user enters a query in the **Streamlit** frontend.
